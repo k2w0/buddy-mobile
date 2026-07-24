@@ -1066,16 +1066,12 @@
       background: #ffffff;
     }
 
-    /* -------------------------------------------------- */
-    /* 모바일 전용 반응형 미디어 쿼리 (768px 이하) 수정 */
-    /* -------------------------------------------------- */
     @media screen and (max-width: 768px) {
       body {
         align-items: center;
         padding: 5px;
       }
 
-      /* 버디버디폰 위치 및 레이아웃 수정 */
       #buddy-phone-screen {
         position: fixed !important;
         left: 50% !important;
@@ -1086,7 +1082,6 @@
         z-index: 1000;
       }
 
-      /* 대화창 내부 아바타 사이드바 수직 정렬 반응형 처리 */
       .main-container {
         flex-direction: column;
       }
@@ -1102,7 +1097,6 @@
         flex: 1;
       }
 
-      /* 프로필/친구정보 모달 모바일화 */
       .profile-modal-body,
       .friend-modal-body {
         flex-direction: column-reverse;
@@ -1114,7 +1108,6 @@
         width: 100%;
       }
 
-      /* 모바일 화면에서도 버튼들이 가로 정렬(row)을 유지하도록 지정 */
       .modal-footer {
         flex-direction: row !important;
         justify-content: space-between;
@@ -1331,13 +1324,12 @@
         </div>
         <div class="input-section">
           <div class="input-wrapper">
-            <!-- 수정한 부분: textarea 내 태그를 완전히 비우고 올바르게 placeholder 속성을 지정함 -->
             <textarea id="chat-input" placeholder="메시지를 입력하세요"></textarea>
             <button class="send-btn" id="send-btn">보내기</button>
           </div>
         </div>
       </div>
-      <!-- 대화 창 우측 프로필 영역 전체 수정 -->
+
       <div class="profile-section">
         <!-- 상대방 프로필 카드 -->
         <div class="profile-card-block">
@@ -1742,7 +1734,6 @@
         document.getElementById('my-ph').style.display = 'block';
       }
 
-      // 대화창 내 프로필 자기소개 및 상태 반영
       const myBioElem = document.getElementById('my-profile-bio');
       if (myBioElem) {
         myBioElem.textContent = myProfile.bio || "자기소개가 없습니다.";
@@ -2023,7 +2014,6 @@
           });
         }
 
-        // 대화 중일 경우 대화 상대의 실시간 상태 및 자기소개 업데이트
         if (currentPartnerId && cachedGlobalUsers[currentPartnerId]) {
           const partnerData = cachedGlobalUsers[currentPartnerId];
           const partnerStatus = partnerData.status || 'offline';
@@ -2306,7 +2296,6 @@
         document.getElementById('partner-nickname-display').textContent = currentPartnerNick;
         document.getElementById('partner-profile-name').textContent = currentPartnerNick;
 
-        // 상대방 자기소개 및 상태 표시 동기화
         const partnerBio = (partnerData && partnerData.profile && partnerData.profile.bio) ? partnerData.profile.bio : "자기소개가 없습니다.";
         document.getElementById('partner-profile-bio').textContent = partnerBio;
 
@@ -2347,6 +2336,7 @@
       document.getElementById('chat-screen').style.display = 'none';
     }
 
+    /* 💡 이 핵심 버그 수정: placeholder를 절대 변경하지 않고 input.value만 초기화하도록 수정! */
     function sendMessage() {
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
@@ -2356,6 +2346,8 @@
           senderNick: myNickname,
           text: text
         });
+        
+        // 오직 입력값만 비우고 placeholder에는 손대지 않음
         input.value = '';
       }
     }
