@@ -660,9 +660,10 @@
       font-size: 13px;
     }
 
-    /* 대화창 우측 프로필 섹션 구조 변경 */
+    /* 대화창 우측 프로필 섹션 구조 고정 개선 */
     .profile-section {
       width: 210px;
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -675,7 +676,6 @@
 
     .profile-card-block {
       display: flex;
-      flex-direction: flex-start;
       align-items: center;
       gap: 8px;
       background: #ffffff;
@@ -2336,7 +2336,6 @@
       document.getElementById('chat-screen').style.display = 'none';
     }
 
-    /* 💡 이 핵심 버그 수정: placeholder를 절대 변경하지 않고 input.value만 초기화하도록 수정! */
     function sendMessage() {
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
@@ -2347,7 +2346,7 @@
           text: text
         });
         
-        // 오직 입력값만 비우고 placeholder에는 손대지 않음
+        // 입력값만 초기화하고 placeholder는 건드리지 않음
         input.value = '';
       }
     }
