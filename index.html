@@ -857,11 +857,13 @@
 
     .modal-footer {
       display: flex;
+      flex-direction: row;
       justify-content: space-between;
       align-items: center;
       padding: 8px 10px;
       background: #c0c0c0;
       border-top: 1px solid #808080;
+      flex-wrap: nowrap;
     }
 
     /* 5. Windows 98 토스트 알림 팝업 및 레트로 다이얼로그 */
@@ -910,6 +912,8 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .win98-btn:active {
@@ -1013,7 +1017,7 @@
     }
 
     /* -------------------------------------------------- */
-    /* 모바일 전용 반응형 미디어 쿼리 (768px 이하) 추가 */
+    /* 모바일 전용 반응형 미디어 쿼리 (768px 이하) 수정 */
     /* -------------------------------------------------- */
     @media screen and (max-width: 768px) {
       body {
@@ -1072,15 +1076,21 @@
         width: 100%;
       }
 
+      /* [수정] 모바일 화면에서도 버튼들이 가로 정렬(row)을 유지하도록 지정 */
       .modal-footer {
-        flex-direction: column;
+        flex-direction: row !important;
+        justify-content: space-between;
+        align-items: center;
         gap: 6px;
+        flex-wrap: nowrap;
       }
 
-      .modal-footer > div {
-        width: 100%;
+      .modal-footer>div {
+        width: auto;
         display: flex;
-        justify-content: space-between;
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
       }
     }
   </style>
@@ -1343,11 +1353,11 @@
         </div>
       </div>
       <div class="modal-footer">
-        <div style="display:flex; gap:4px;">
+        <div style="display:flex; flex-direction:row; gap:4px;">
           <button class="win98-btn" style="color:#d9534f;" onclick="openDeleteAccountDialog()">회원탈퇴</button>
           <button class="win98-btn" onclick="openChangePasswordDialog()">비밀번호 변경</button>
         </div>
-        <div>
+        <div style="display:flex; flex-direction:row; gap:4px;">
           <button class="win98-btn" id="save-profile-btn" onclick="saveProfile()">저장</button>
           <button class="win98-btn" onclick="closeProfileModal()">닫기</button>
         </div>
@@ -1421,7 +1431,8 @@
           <button class="win98-btn" style="width:100%; font-size:11px; padding:3px 0;">친구의상구매</button>
         </div>
       </div>
-      <div class="modal-footer" style="justify-content: flex-end; gap: 6px;">
+      <div class="modal-footer"
+        style="display: flex; flex-direction: row; justify-content: flex-end; gap: 6px; width: 100%;">
         <button class="win98-btn" id="add-friend-modal-btn" onclick="confirmAddFriendFromModal()">친구추가</button>
         <button class="win98-btn">홈피가기</button>
         <button class="win98-btn" onclick="closeFriendInfoModal()">닫기</button>
