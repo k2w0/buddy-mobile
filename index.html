@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>버디버디</title>
   <style>
     * {
@@ -21,8 +21,9 @@
       align-items: center;
       min-height: 100vh;
       position: relative;
-      overflow-x: hidden;
+      overflow: hidden;
       padding: 10px;
+      touch-action: manipulation;
     }
 
     .window {
@@ -59,6 +60,7 @@
       width: 380px;
       max-width: 100%;
       display: none;
+      margin: auto;
     }
 
     .login-body {
@@ -159,6 +161,7 @@
       display: none;
       flex-direction: column;
       position: relative;
+      margin: auto;
     }
 
     .menu-bar {
@@ -333,6 +336,7 @@
       border-radius: 50%;
       display: inline-block;
       border: 1px solid rgba(0, 0, 0, 0.2);
+      flex-shrink: 0;
     }
 
     .dot-online {
@@ -532,19 +536,19 @@
       text-align: center;
     }
 
-    /* 1:1 대화 화면 */
+    /* 1:1 대화 화면 (메인 화면 위 레이어로 중앙 고정) */
     #chat-screen {
-      width: 530px;
-      max-width: 100%;
+      width: 580px;
+      max-width: 95vw;
       height: 580px;
-      max-height: 95vh;
+      max-height: 90vh;
       display: none;
       flex-direction: column;
-      position: absolute;
-      top: 20px;
+      position: fixed;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      z-index: 30;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
     }
 
     .main-container {
@@ -654,16 +658,33 @@
       font-size: 13px;
     }
 
+    /* 대화창 우측 프로필 섹션 구조 변경 */
     .profile-section {
-      width: 130px;
+      width: 210px;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       gap: 6px;
+      background: #cce3e8;
+      padding: 8px;
+      border: 1px solid #7199a6;
+      border-radius: 4px;
+    }
+
+    .profile-card-block {
+      display: flex;
+      flex-direction: flex-start;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      padding: 6px;
+      border: 1px solid #a2c7d1;
+      border-radius: 3px;
     }
 
     .avatar-box {
-      width: 130px;
-      height: 150px;
+      width: 55px;
+      height: 65px;
       background-color: #f0f4f5;
       border: 1px solid #7199a6;
       display: flex;
@@ -672,6 +693,7 @@
       position: relative;
       overflow: hidden;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .avatar-box img {
@@ -684,17 +706,43 @@
     .avatar-placeholder {
       text-align: center;
       color: #666;
-      font-size: 11px;
+      font-size: 10px;
+    }
+
+    .profile-info-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .profile-name-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .profile-name {
-      background-color: #c2e28f;
-      border: 1px solid #8cb158;
-      text-align: center;
-      padding: 4px;
       font-weight: bold;
-      color: #2f4f00;
+      color: #1a525f;
       font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-bio {
+      font-size: 11px;
+      color: #555;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
     }
 
     .modal-overlay {
@@ -1021,19 +1069,8 @@
     /* -------------------------------------------------- */
     @media screen and (max-width: 768px) {
       body {
-        align-items: flex-start;
+        align-items: center;
         padding: 5px;
-      }
-
-      /* 모바일 레이아웃 조정 */
-      #login-screen,
-      #main-messenger-screen,
-      #chat-screen {
-        width: 100% !important;
-        max-width: 100% !important;
-        position: relative !important;
-        left: 0 !important;
-        transform: none !important;
       }
 
       /* 버디버디폰 위치 및 레이아웃 수정 */
@@ -1055,13 +1092,12 @@
       .profile-section {
         width: 100%;
         flex-direction: row;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
       }
 
-      .avatar-box {
-        width: 60px;
-        height: 60px;
+      .profile-card-block {
+        flex: 1;
       }
 
       /* 프로필/친구정보 모달 모바일화 */
@@ -1076,7 +1112,7 @@
         width: 100%;
       }
 
-      /* [수정] 모바일 화면에서도 버튼들이 가로 정렬(row)을 유지하도록 지정 */
+      /* 모바일 화면에서도 버튼들이 가로 정렬(row)을 유지하도록 지정 */
       .modal-footer {
         flex-direction: row !important;
         justify-content: space-between;
@@ -1298,18 +1334,37 @@
           </div>
         </div>
       </div>
+      <!-- 대화 창 우측 프로필 영역 전체 수정 -->
       <div class="profile-section">
-        <div class="avatar-box" onclick="openPartnerProfile()">
-          <span class="avatar-placeholder" id="partner-ph">상대 아바타</span>
-          <img id="partner-img" src="" alt="상대 아바타">
+        <!-- 상대방 프로필 카드 -->
+        <div class="profile-card-block">
+          <div class="avatar-box" onclick="openPartnerProfile()">
+            <span class="avatar-placeholder" id="partner-ph">상대 아바타</span>
+            <img id="partner-img" src="" alt="상대 아바타">
+          </div>
+          <div class="profile-info-details">
+            <div class="profile-name-row">
+              <span class="status-dot dot-offline" id="partner-status-dot"></span>
+              <span class="profile-name" id="partner-profile-name">상대방</span>
+            </div>
+            <div class="profile-bio" id="partner-profile-bio">자기소개가 없습니다.</div>
+          </div>
         </div>
-        <div class="profile-name" id="partner-profile-name">상대방</div>
-        <div style="margin-top: auto;"></div>
-        <div class="avatar-box" onclick="openProfileModal()">
-          <span class="avatar-placeholder" id="my-ph">내 아바타</span>
-          <img id="my-img" src="" alt="내 아바타">
+
+        <!-- 내 프로필 카드 -->
+        <div class="profile-card-block">
+          <div class="avatar-box" onclick="openProfileModal()">
+            <span class="avatar-placeholder" id="my-ph">내 아바타</span>
+            <img id="my-img" src="" alt="내 아바타">
+          </div>
+          <div class="profile-info-details">
+            <div class="profile-name-row">
+              <span class="status-dot dot-online" id="my-chat-status-dot"></span>
+              <span class="profile-name" id="my-profile-name">나</span>
+            </div>
+            <div class="profile-bio" id="my-profile-bio">자기소개가 없습니다.</div>
+          </div>
         </div>
-        <div class="profile-name" id="my-profile-name">나</div>
       </div>
     </div>
   </div>
@@ -1683,6 +1738,17 @@
         document.getElementById('my-img').style.display = 'none';
         document.getElementById('my-ph').style.display = 'block';
       }
+
+      // 대화창 내 프로필 자기소개 및 상태 반영
+      const myBioElem = document.getElementById('my-profile-bio');
+      if (myBioElem) {
+        myBioElem.textContent = myProfile.bio || "자기소개가 없습니다.";
+      }
+
+      const myChatDot = document.getElementById('my-chat-status-dot');
+      if (myChatDot) {
+        myChatDot.className = 'status-dot ' + (myStatus === 'online' ? 'dot-online' : (myStatus === 'away' ? 'dot-away' : 'dot-offline'));
+      }
     }
 
     function listenFriendRequests() {
@@ -1923,6 +1989,7 @@
       myStatus = document.getElementById('my-status-select').value;
       localStorage.setItem('buddy_saved_status', myStatus);
       updateMyDataToDB();
+      updateProfileUI();
     }
 
     function updateMyDataToDB() {
@@ -1951,6 +2018,20 @@
               renderFriends(cachedGlobalUsers, cachedFriendIds);
             }
           });
+        }
+
+        // 대화 중일 경우 대화 상대의 실시간 상태 및 자기소개 업데이트
+        if (currentPartnerId && cachedGlobalUsers[currentPartnerId]) {
+          const partnerData = cachedGlobalUsers[currentPartnerId];
+          const partnerStatus = partnerData.status || 'offline';
+          const partnerDot = document.getElementById('partner-status-dot');
+          if (partnerDot) {
+            partnerDot.className = 'status-dot ' + (partnerStatus === 'online' ? 'dot-online' : (partnerStatus === 'away' ? 'dot-away' : 'dot-offline'));
+          }
+          const partnerBio = document.getElementById('partner-profile-bio');
+          if (partnerBio && partnerData.profile) {
+            partnerBio.textContent = partnerData.profile.bio || "자기소개가 없습니다.";
+          }
         }
       });
     }
@@ -2190,6 +2271,13 @@
       }
     }
 
+    function openPartnerProfile() {
+      if (currentPartnerId) {
+        selectedFriendForContext = { id: currentPartnerId };
+        onContextMenuViewInfo();
+      }
+    }
+
     function startChat(partnerTarget) {
       if (!partnerTarget) return;
 
@@ -2214,6 +2302,16 @@
 
         document.getElementById('partner-nickname-display').textContent = currentPartnerNick;
         document.getElementById('partner-profile-name').textContent = currentPartnerNick;
+
+        // 상대방 자기소개 및 상태 표시 동기화
+        const partnerBio = (partnerData && partnerData.profile && partnerData.profile.bio) ? partnerData.profile.bio : "자기소개가 없습니다.";
+        document.getElementById('partner-profile-bio').textContent = partnerBio;
+
+        const partnerStatus = (partnerData && partnerData.status) ? partnerData.status : 'offline';
+        const partnerDot = document.getElementById('partner-status-dot');
+        if (partnerDot) {
+          partnerDot.className = 'status-dot ' + (partnerStatus === 'online' ? 'dot-online' : (partnerStatus === 'away' ? 'dot-away' : 'dot-offline'));
+        }
 
         if (partnerData && partnerData.profile && partnerData.profile.avatar) {
           document.getElementById('partner-img').src = partnerData.profile.avatar;
