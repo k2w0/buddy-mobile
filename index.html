@@ -315,7 +315,9 @@
     }
 
 
-    /* 휴대폰: 꾹 눌러도 글자 선택/끌기/돋보기 안 뜨게 */
+    /* 휴대폰: 꾹 눌러도 글자 선택/끌기/돋보기 안 뜨게 (메신저 목록 화면 전체) */
+    #main-messenger-screen,
+    #main-messenger-screen *,
     .friends-container,
     .friend-item,
     .music-item,
@@ -328,6 +330,8 @@
       -webkit-user-drag: none;
     }
 
+    #main-messenger-screen input,
+    #main-messenger-screen textarea,
     .friends-container input,
     .friends-container textarea {
       -webkit-user-select: text;
@@ -4064,6 +4068,7 @@
         timer = setTimeout(() => {
           timer = null;
           fired = true;
+          try { const sel = window.getSelection(); if (sel) sel.removeAllRanges(); } catch (err) { }
           const menu = document.getElementById('friend-context-menu');
           showContextMenu(startX, startY, item.dataset.friendId, item.dataset.friendNick || item.dataset.friendId);
           if (menu) {
@@ -4085,6 +4090,10 @@
         if (fired && e.cancelable) e.preventDefault();
       });
       document.addEventListener('touchcancel', cancel);
+      // iOS: 친구 목록에서 글자 선택·끌기 시작 자체를 막아요
+      const inList = (t) => t && t.closest && t.closest('#main-messenger-screen') && !t.closest('input, textarea');
+      document.addEventListener('selectstart', (e) => { if (inList(e.target.nodeType === 3 ? e.target.parentElement : e.target)) e.preventDefault(); }, true);
+      document.addEventListener('dragstart', (e) => { if (inList(e.target.nodeType === 3 ? e.target.parentElement : e.target)) e.preventDefault(); }, true);
       // 꾹 누른 직후의 클릭은 무시 (메뉴만 열고 대화창은 안 열림)
       document.addEventListener('click', (e) => {
         if (fired && e.target.closest && e.target.closest('.friend-item')) {
