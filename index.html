@@ -314,6 +314,27 @@
       user-select: none;
     }
 
+
+    /* 휴대폰: 꾹 눌러도 글자 선택/끌기/돋보기 안 뜨게 */
+    .friends-container,
+    .friend-item,
+    .music-item,
+    .group-header,
+    .main-tab,
+    .messenger-bottom {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
+    }
+
+    .friends-container input,
+    .friends-container textarea {
+      -webkit-user-select: text;
+      user-select: text;
+      -webkit-touch-callout: default;
+    }
+
     .friend-item,
     .music-item {
       padding: 6px 8px;
@@ -2911,6 +2932,8 @@
 
         const item = document.createElement('div');
         item.className = 'friend-item';
+        item.dataset.friendId = targetId;
+        item.dataset.friendNick = displayNickname;
         item.innerHTML = `
           <div style="display:flex; align-items:center; gap:8px; flex:1;">
             <span class="status-dot ${dotClass}"></span>
@@ -4023,6 +4046,56 @@
           return original.apply(this, arguments);
         };
       });
+    })();
+  </script>
+  <script>
+
+    /* 휴대폰: 친구를 꾹 누르면(0.5초) PC의 오른쪽 클릭 메뉴가 떠요 */
+    (function friendLongPress() {
+      let timer = null, startX = 0, startY = 0, fired = false;
+      const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
+      document.addEventListener('touchstart', (e) => {
+        const item = e.target.closest && e.target.closest('.friend-item');
+        fired = false;
+        cancel();
+        if (!item || !item.dataset.friendId || e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        timer = setTimeout(() => {
+          timer = null;
+          fired = true;
+          const menu = document.getElementById('friend-context-menu');
+          showContextMenu(startX, startY, item.dataset.friendId, item.dataset.friendNick || item.dataset.friendId);
+          if (menu) {
+            const r = menu.getBoundingClientRect();
+            if (r.right > window.innerWidth - 4) menu.style.left = Math.max(4, window.innerWidth - r.width - 4) + 'px';
+            if (r.bottom > window.innerHeight - 4) menu.style.top = Math.max(4, window.innerHeight - r.height - 4) + 'px';
+          }
+          if (navigator.vibrate) { try { navigator.vibrate(15); } catch (err) { } }
+        }, 500);
+      }, { passive: true });
+      document.addEventListener('touchmove', (e) => {
+        if (!timer) return;
+        const t = e.touches[0];
+        if (Math.abs(t.clientX - startX) > 10 || Math.abs(t.clientY - startY) > 10) cancel();
+      }, { passive: true });
+      document.addEventListener('touchend', (e) => {
+        cancel();
+        // 메뉴를 띄운 뒤 손을 떼면 대화창이 열리지 않게
+        if (fired && e.cancelable) e.preventDefault();
+      });
+      document.addEventListener('touchcancel', cancel);
+      // 꾹 누른 직후의 클릭은 무시 (메뉴만 열고 대화창은 안 열림)
+      document.addEventListener('click', (e) => {
+        if (fired && e.target.closest && e.target.closest('.friend-item')) {
+          e.stopPropagation();
+          e.preventDefault();
+          fired = false;
+        }
+      }, true);
+      document.addEventListener('contextmenu', (e) => {
+        if (e.target.closest && e.target.closest('.friend-item') && fired) e.preventDefault();
+      }, true);
     })();
   </script>
 </body>
